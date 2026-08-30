@@ -1,0 +1,85 @@
+{
+  "date": "2026-08-30",
+  "updated_at": "2026-08-30T18:27:29+09:00",
+  "model": "AI HAWKS Handicap Adjusted",
+  "games": [
+    {
+      "rank": 1,
+      "home": "広島",
+      "away": "ヤクルト",
+      "pick": "ヤクルト",
+      "base_probability": 54.0,
+      "handicap_team": "広島",
+      "handicap": 0.6,
+      "pick_handicap": -0.6,
+      "win_probability": 57.5,
+      "predicted_score": "3-4",
+      "confidence": "A"
+    },
+    {
+      "rank": 2,
+      "home": "西武",
+      "away": "楽天",
+      "pick": "西武",
+      "base_probability": 61.0,
+      "handicap_team": "西武",
+      "handicap": 0.6,
+      "pick_handicap": 0.6,
+      "win_probability": 57.5,
+      "predicted_score": "4-2",
+      "confidence": "A"
+    },
+    {
+      "rank": 3,
+      "home": "日本ハム",
+      "away": "ロッテ",
+      "pick": "日本ハム",
+      "base_probability": 62.0,
+      "handicap_team": "日本ハム",
+      "handicap": 1.5,
+      "pick_handicap": 1.5,
+      "win_probability": 53.2,
+      "predicted_score": "5-3",
+      "confidence": "B+"
+    },
+    {
+      "rank": 4,
+      "home": "阪神",
+      "away": "巨人",
+      "pick": "阪神",
+      "base_probability": 57.0,
+      "handicap_team": "阪神",
+      "handicap": 1.0,
+      "pick_handicap": 1.0,
+      "win_probability": 51.0,
+      "predicted_score": "3-1",
+      "confidence": "B"
+    },
+    {
+      "rank": 5,
+      "home": "オリックス",
+      "away": "ソフトバンク",
+      "pick": "ソフトバンク",
+      "base_probability": 58.0,
+      "handicap_team": "ソフトバンク",
+      "handicap": 1.3,
+      "pick_handicap": 1.3,
+      "win_probability": 50.3,
+      "predicted_score": "3-4",
+      "confidence": "C+"
+    },
+    {
+      "rank": 6,
+      "home": "DeNA",
+      "away": "中日",
+      "pick": "DeNA",
+      "base_probability": 53.0,
+      "handicap_team": "DeNA",
+      "handicap": 0.6,
+      "pick_handicap": 0.6,
+      "win_probability": 49.4,
+      "predicted_score": "3-2",
+      "confidence": "C"
+    }
+  ]
+}
