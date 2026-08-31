@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hawks-ai",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-31",
+  "workers_dev": true,
+  "vars": {
+    "ORIGIN_URL": "https://REPLACE-WITH-STREAMLIT-ORIGIN.example"
+  }
+}
