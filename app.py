@@ -11,9 +11,13 @@ import json
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+from site_navigation import render_site_navigation
+
 
 # ページ設定
 st.set_page_config(page_title="ホークス応援 AI勝率シミュレーター", page_icon="⚾", layout="wide")
+
+render_site_navigation(current="prediction")
 
 # ===== HAWKS AI 試合履歴 永続保存 =====
 HISTORY_FILE = "/app/data/game_history.json"
