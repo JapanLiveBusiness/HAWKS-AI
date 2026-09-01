@@ -1,0 +1,92 @@
+name: Deploy HAWKS AI production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-hawks-ai
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate deploy secrets
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+        run: |
+          missing=0
+          for name in DEPLOY_HOST DEPLOY_USER DEPLOY_PORT TAILSCALE_AUTHKEY; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is not available to this workflow"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v4
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Verify production route
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          tailscale ping -c 3 "$DEPLOY_HOST" || true
+          nc -vz -w 5 "$DEPLOY_HOST" "$DEPLOY_PORT"
+
+      - name: Deploy to production server
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          ssh \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "DEPLOY_SHA='$DEPLOY_SHA' bash -s" <<'REMOTE'
+          set -e
+          export APP_DIR="/opt/hawks-ai"
+          export DATA_DIR="/opt/hawks-ai/data"
+          export BRANCH="main"
+          export CONTAINER_NAME="hawks-app"
+          export IMAGE_NAME="hawks-app"
+          export PORT="8501"
+
+          cd "$APP_DIR"
+          git fetch origin "$BRANCH"
+          git show "origin/$BRANCH:scripts/deploy-production.sh" > /tmp/hawks-ai-deploy.sh
+          chmod +x /tmp/hawks-ai-deploy.sh
+          /tmp/hawks-ai-deploy.sh
+          REMOTE
+
+      - name: Verify app health
+        shell: bash
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "curl -fsS http://127.0.0.1:8501/_stcore/health"
